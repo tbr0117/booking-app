@@ -10,15 +10,18 @@ const conferenceTickets int = 50
 var conferenceName string = "Go Conference"
 var remainingtickets uint = 50
 
+type UserData struct {
+	firstName   string
+	lastName    string
+	emailId     string
+	noOfTickets uint
+}
+
 // var aBookings = [50]string{"RAM", "KITU"}
 // var aBookings []string // slice
-var aBookings = make([]map[string]string, 0)
+var aTempMaps = make([]map[string]string, 0)
 
-type UserData struct {
-	firstName string
-	lastName string
-	email	string
-	noOfTickets uint
+var aBookings []UserData
 
 }
 
@@ -69,10 +72,10 @@ func printFirstNames() {
 	fmt.Printf("The first names of bookings are: %v \n", getFirstNames(aBookings))
 }
 
-func getFirstNames(aBookings []map[string]string) []string {
+func getFirstNames(aBookings []UserData) []string {
 	aFirstNames := []string{}
 	for _, booking := range aBookings {
-		aFirstNames = append(aFirstNames, booking["firstName"])
+		aFirstNames = append(aFirstNames, booking.firstName)
 	}
 	return aFirstNames
 }
@@ -105,7 +108,20 @@ func bookTickets(sFirstName string, sLastName string, sEmailId string, iNoOfTick
 	// aBookings = append(aBookings, sFirstName+" "+sLastName)
 
 	// var myMap map[string]string
-	var oUserData = make(map[string]string)
+	// var oUserMap = make(map[string]string)
+	// oUserMap["firstName"] = sFirstName
+	// oUserMap["lastName"] = sLastName
+	// oUserMap["emailId"] = sEmailId
+	// oUserMap["noOfTickets"] = strconv.FormatUint(uint64(iNoOfTickets), 10)
+	// aTempMaps = append(aTempMaps, oUserMap)
+
+	// Use struct
+	var oUserData = UserData{
+		firstName:   sFirstName,
+		lastName:    sLastName,
+		emailId:     sEmailId,
+		noOfTickets: iNoOfTickets,
+	}
 	aBookings = append(aBookings, oUserData)
 	oUserData["firstName"] = sFirstName
 	oUserData["lastName"] = sLastName
