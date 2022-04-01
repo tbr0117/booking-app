@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
-	"strconv"
+	"sync"
+	"time"
+	// "strconv"
 )
+
+// var aArray = [3]string{"dsfs", "dsfds", "sdfsdf"}
 
 const conferenceTickets int = 50
 
@@ -23,32 +27,32 @@ var aTempMaps = make([]map[string]string, 0)
 
 var aBookings []UserData
 
-}
+// wait group used to wait(hold) main thread upto complte sub threads
+var oWait = sync.WaitGroup{}
 
 func main() {
-	// myname := "hello this is str variable"
-	// unit doesn't allow -ve values
+	var sDoForMultiRequests string
+	fmt.Println("Do you want to enter multiple requests: Y/N")
+	fmt.Scan(&sDoForMultiRequests)
+	if sDoForMultiRequests == "Y" || sDoForMultiRequests == "y" {
+		multiRequestProcessConcurrencyGoRouting()
+	} else {
+		singleProcessSynchoronizeGoRuouting()
+	}
+}
+
+func multiRequestProcessConcurrencyGoRouting() {
 	greetUsers()
 	fmt.Printf("types of: Conference name is %T , ConferenceTickets is %T, remaininfTickets is %T \n", conferenceName, conferenceTickets, remainingtickets)
 
-	// aBookings[0] = "nana"
-
-	// ask user or their name
-	// fmt.Println(remainingtickets)
-	// fmt.Println(&remainingtickets) pointer -> memory address
-	// for { // inifinite loop
 	for remainingtickets > 0 && len(aBookings) < 50 {
 		sFirstName, sLastName, sEmailId, iNoOfTickets := getUserInputs()
 
 		if !validateUserInputs(sFirstName, sLastName, sEmailId, iNoOfTickets) {
 			continue
 		}
-
-		// } else if iNoOfTickets == remainingtickets {
-		// 	//  do somthing
-		// } else {
-
 		bookTickets(sFirstName, sLastName, sEmailId, iNoOfTickets)
+		go sendTickets(sFirstName, sLastName, sEmailId, iNoOfTickets, false)
 
 		printFirstNames()
 
@@ -125,7 +129,6 @@ func getUserInputs() (string, string, string, uint) {
 	return sFirstName, sLastName, sEmailId, iNoOfTickets
 }
 
-
 func bookTickets(sFirstName string, sLastName string, sEmailId string, iNoOfTickets uint) {
 	remainingtickets = remainingtickets - uint(iNoOfTickets)
 	// aBookings[0] = sFirstName + " " + sLastName
@@ -147,10 +150,6 @@ func bookTickets(sFirstName string, sLastName string, sEmailId string, iNoOfTick
 		noOfTickets: iNoOfTickets,
 	}
 	aBookings = append(aBookings, oUserData)
-	oUserData["firstName"] = sFirstName
-	oUserData["lastName"] = sLastName
-	oUserData["emailId"] = sEmailId
-	oUserData["noOfTickets"] = strconv.FormatUint(uint64(iNoOfTickets), 10)
 
 	fmt.Printf("The whole slice %v \n", aBookings)
 	fmt.Printf("The first slice %v \n", aBookings[0])
