@@ -120,3 +120,15 @@ func bookTickets(sFirstName string, sLastName string, sEmailId string, iNoOfTick
 	fmt.Printf("Thank you %v %v for booking %v tickets tickets. You will receive a confirmation mail at %v \n", sFirstName, sLastName, iNoOfTickets, sEmailId)
 	fmt.Printf("%v remaining tickets of %v \n", remainingtickets, conferenceTickets)
 }
+
+func sendTickets(sFirstName string, sLastName string, sEmailId string, iNoOfTickets uint, bWaiting bool) {
+	// wait for 10 seconds to process
+	time.Sleep(10 * time.Second)
+	var sTicketsInfo = fmt.Sprintf("%v tickets are booked by name %v %v", iNoOfTickets, sFirstName, sLastName)
+	fmt.Println("#######################")
+	fmt.Printf("Sending tickets:\n %v \n to email addtress %v \n", sTicketsInfo, sEmailId)
+	fmt.Println("#######################")
+	if bWaiting {
+		oWait.Done() // Sub Thread process complete, set waiting queue entity as done.
+	}
+}
