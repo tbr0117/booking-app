@@ -59,7 +59,31 @@ func main() {
 		}
 		// }
 	}
+}
 
+func singleProcessSynchoronizeGoRuouting() {
+	greetUsers()
+	fmt.Printf("types of: Conference name is %T , ConferenceTickets is %T, remaininfTickets is %T \n", conferenceName, conferenceTickets, remainingtickets)
+
+	sFirstName, sLastName, sEmailId, iNoOfTickets := getUserInputs()
+
+	if !validateUserInputs(sFirstName, sLastName, sEmailId, iNoOfTickets) {
+		return
+	}
+
+	bookTickets(sFirstName, sLastName, sEmailId, iNoOfTickets)
+
+	oWait.Add(1)                                                        // add waiting list for sub thread
+	go sendTickets(sFirstName, sLastName, sEmailId, iNoOfTickets, true) // go is used to create sub threads
+
+	printFirstNames()
+
+	if remainingtickets == 0 {
+		fmt.Printf("Our Conference is booked out. come back next year.")
+		// break
+	}
+
+	oWait.Wait() // wait here upto complete waiting list
 }
 
 func greetUsers() {
